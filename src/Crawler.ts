@@ -19,12 +19,12 @@ export type CrawlerOptions = {
   hostname: string
   port: number
   options: {
-    crawlLinks: boolean
     routes: string[] | (() => Promise<string[]>)
     onBrowserPage?: (page: Page) => void | Promise<void>
     manually?: string | boolean
     linkFilter?: (url: string) => boolean
     wait?: string | number
+    crawlLinks?: boolean
   }
   writer: Writer
   logger: Logger

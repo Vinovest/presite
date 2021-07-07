@@ -1,22 +1,25 @@
 {
-  "name": "presite",
-  "version": "2.0.0",
+  "name": "@vinovest/presite",
+  "version": "2.0.1",
   "description": "CLI app for pre-rendering SPA websites.",
   "repository": {
-    "url": "egoist/presite",
+    "url": "Vinovest/presite",
     "type": "git"
   },
   "bin": "dist/cli.js",
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "test": "npm run build",
     "build": "rm -rf dist && tsup src/cli.ts --dts",
     "prepublishOnly": "npm run build",
     "presite": "node -r esbuild-register src/cli.ts"
   },
-  "author": "egoist <0x142857@gmail.com>",
+  "author": "john.warren@vinovest.co",
   "license": "MIT",
   "dependencies": {
     "@egoist/promise-queue": "^1.1.0",
