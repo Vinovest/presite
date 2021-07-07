@@ -1,20 +1,41 @@
 
 import { resolve } from 'path'
 import { Piscina } from 'piscina'
+class ArrayTaskQueue extends TaskQueue {
+  constructor(tasks){
+    super();
+    this.tasks = new Set();
+    this.complete = new Set();
+  }
+
+  get size () { return this.tasks.length; }
+
+  shift () {
+    return this.tasks.shift();
+  }
+
+  push (task) {
+    this.tasks.add(task);
+  }
+
+  remove (task) {
+    const index = this.tasks.indexOf(task);
+    assert.notStrictEqual(index, -1);
+    this.tasks.splice(index, 1);
+  }
+}
 
 const pool = new Piscina({
   filename: resolve(__dirname, 'worker.js'),
   maxQueue: 'auto'
 });
 
-const stream = getStreamSomehow();
-stream.setEncoding('utf8');
 
 pool.on('drain', () => {
-  if (stream.isPaused()) {
+
     console.log('resuming...', counter, pool.queueSize);
     stream.resume();
-  }
+
 });
 
 stream

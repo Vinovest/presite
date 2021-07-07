@@ -5,7 +5,7 @@ import chalk from 'chalk'
 import { Writer } from './Writer'
 import { Logger } from './Logger'
 import { Page } from 'puppeteer-core'
-
+import {Cluster} from "puppeteer-cluster"
 import PromiseQueue, { Queue } from 'p-queue';
 
 
@@ -21,6 +21,40 @@ const routeToFile = (route: string) => {
   return route.replace(/\/?$/, '/index.html')
 }
 
+class QueueClass {
+  _all: {[key: string]: any}
+  _queue: Array<[(r: string) => Promise<void>, string]>
+	constructor() {
+		this._queue = [];
+    this._all = {};
+	}
+
+	enqueue(run: any, {route}: string) {
+    if(!this._all[route]){
+      this._queue.push([run, route]);
+      this._all[route] = route;
+    }
+	}
+
+	dequeue() {
+   
+    if(this.size){
+       // @ts-ignore
+      const [run, route] = this._queue.shift();
+      console.log("RUN", run, route)
+      return run
+    }
+		
+	}
+
+	get size() {
+		return this._queue.length;
+	}
+
+	filter(options: any) {
+		return this._queue;
+	}
+}
 
 export type CrawlerOptions = {
   hostname: string
@@ -53,27 +87,19 @@ export class Crawler {
       typeof options.routes === 'function'
         ? await options.routes()
         : options.routes
-   
+        // @ts-ignore
+        const queue = new PromiseQueue({concurrency: options.maxConcurrent || 2, queueClass: QueueClass})
        
     const crawlRoute = async (routes: string[]) => {
-      
-  
-        const p = async function(r: any){
-          const l = async () => await singleRoute(r);
-          return l;
-        }
-        const queue = new PromiseQueue({concurrency: options.maxConcurrent || 2})
+
         const singleRoute = async (route: string) => {
+          console.log('Rote', route)
           const file = routeToFile(route)
           let links: Set<string> | undefined
    
-          (async () => {
+  
             const browser = await puppeteer.launch(options.puppeteerOptions ? options.puppeteerOptions : {args: ['--headless', '--no-sandbox']});
-            // @ts-ignore
-            await queue.add(async () => await a(browser, queue));
-          })();
-    
-          const a = async (browser: any, queue: any) => {
+ 
             const page = await browser.newPage();
             await page.goto(`http://${hostname}:${port}${route}`, { waitUntil: 'networkidle0', timeout: 0}).catch(e => console.error("NAVIGATE", e))
             if (options.crawlLinks){
@@ -93,10 +119,11 @@ export class Crawler {
                 const filtered = options.linkFilter
                   ? Array.from(links).filter(options.linkFilter)
                   : links
-    
+    // @ts-ignore
                 for (const link of filtered) {
                   (async () => {
-                    await queue.add(async () => await singleRoute(link));
+                    // @ts-ignore
+                    await queue.add(async () => singleRoute(link), {route: link});
                   })();
                 }
               }
@@ -122,17 +149,17 @@ export class Crawler {
             
             console.log('Done: Unicorn task');
           }
-
+          for (const route of routes) {
+            // @ts-ignore
+            await queue.add(async() => singleRoute(route), {route});
+          
+        
+      //  queue.start();
+      
         }
       
-      for (const route of routes) {
-        (async () => {
-          await queue.add(async () => await singleRoute(route));
-        })();
-      }
-    //  queue.start();
-    }
+}
 
-    await crawlRoute(routes)
+    return await crawlRoute(routes)
   }
 }

@@ -64,7 +64,7 @@ const allR = async () => {
 let presite;
 
 module.exports = {
-    wait: 99999,
+    timeout: 99999,
     puppeteerOptions: { args: ["--headless", "--no-sandbox"] },
     maxConcurrent: 2,
     routes: ["/", "/blog"],

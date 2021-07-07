@@ -43,6 +43,8 @@
     "contentful": "^8.4.2",
     "esbuild-register": "^2.3.0",
     "p-queue": "^7.1.0",
+    "puppeteer-cluster": "^0.22.0",
+    "ts-node": "^10.0.0",
     "tsup": "^4.8.21",
     "typescript": "^4.2.3"
   },

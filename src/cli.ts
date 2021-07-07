@@ -84,6 +84,7 @@ async function main() {
         options: {
           crawlLinks: config.crawlLinks || true,
           routes: config.routes,
+          maxConcurrent: config.maxConcurrent,
           onBrowserPage: config.onBrowserPage,
           manually: config.manually,
           linkFilter: config.linkFilter,
