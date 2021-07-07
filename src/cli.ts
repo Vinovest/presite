@@ -95,7 +95,7 @@ async function main() {
 
       await crawler.crawl()
 
-      server.stop()
+      // server.stop()
       logger.log(`Done, check out ${chalk.green(config.outDir)} folder`)
     })
 

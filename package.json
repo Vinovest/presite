@@ -1,6 +1,6 @@
 {
   "name": "@vinovest/presite",
-  "version": "2.0.2",
+  "version": "2.0.8",
   "description": "CLI app for pre-rendering SPA websites.",
   "repository": {
     "url": "Vinovest/presite",
@@ -42,6 +42,7 @@
     "@types/update-notifier": "^5.0.0",
     "contentful": "^8.4.2",
     "esbuild-register": "^2.3.0",
+    "p-queue": "^7.1.0",
     "tsup": "^4.8.21",
     "typescript": "^4.2.3"
   },
