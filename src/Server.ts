@@ -29,6 +29,11 @@ export class Server {
         return next()
       }
       const file = join(this.opts.baseDir, req.path + '.js')
+      if(await fs.pathExists(join(this.opts.baseDir, req.path))){
+     
+        res.sendStatus(404)
+        next();
+      }
       if (await fs.pathExists(file)) {
         // Remove copied original file in output directory
         // e.g. /feed.xml should remove original feed.xml.js in output directory
