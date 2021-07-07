@@ -66,7 +66,7 @@ let presite;
 module.exports = {
     timeout: 99999,
     puppeteerOptions: { args: ["--headless", "--no-sandbox"] },
-    maxConcurrent: 2,
+    maxConcurrent: 10,
     routes: ["/", "/blog"],
     crawlLinks: true,
 };

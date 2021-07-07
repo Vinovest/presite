@@ -5,7 +5,6 @@ import chalk from 'chalk'
 import { Writer } from './Writer'
 import { Logger } from './Logger'
 import { Page } from 'puppeteer-core'
-import {Cluster} from "puppeteer-cluster"
 import PromiseQueue, { Queue } from 'p-queue';
 
 
@@ -29,7 +28,7 @@ class QueueClass {
     this._all = {};
 	}
 
-	enqueue(run: any, {route}: string) {
+	enqueue(run: any, {route}: {route: string}) {
     if(!this._all[route]){
       this._queue.push([run, route]);
       this._all[route] = route;
@@ -41,7 +40,6 @@ class QueueClass {
     if(this.size){
        // @ts-ignore
       const [run, route] = this._queue.shift();
-      console.log("RUN", run, route)
       return run
     }
 		
@@ -89,11 +87,13 @@ export class Crawler {
         : options.routes
         // @ts-ignore
         const queue = new PromiseQueue({concurrency: options.maxConcurrent || 2, queueClass: QueueClass})
-       
+        queue.on('idle', result => {
+          console.log("FINISHED");
+          process.exit(0);
+        });
     const crawlRoute = async (routes: string[]) => {
 
         const singleRoute = async (route: string) => {
-          console.log('Rote', route)
           const file = routeToFile(route)
           let links: Set<string> | undefined
    
@@ -147,7 +147,6 @@ export class Crawler {
             await writer.write({ html, file })
             browser.close();
             
-            console.log('Done: Unicorn task');
           }
           for (const route of routes) {
             // @ts-ignore
