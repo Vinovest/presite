@@ -2,15 +2,12 @@
 import path from 'path'
 import { cac } from 'cac'
 import chalk from 'chalk'
-import update from 'update-notifier'
 import JoyCon from 'joycon'
-import { Page } from 'puppeteer-core'
 
 import type { CrawlerOptions } from './Crawler'
 
 const pkg: typeof import('../package.json') = require('../package')
 
-update({ pkg }).notify()
 
 async function main() {
   const cli = cac('presite')
@@ -85,7 +82,9 @@ async function main() {
         hostname: server.hostname,
         port: server.port!,
         options: {
+          crawlLinks: config.crawlLinks || true,
           routes: config.routes,
+          maxConcurrent: config.maxConcurrent,
           onBrowserPage: config.onBrowserPage,
           manually: config.manually,
           linkFilter: config.linkFilter,
@@ -97,7 +96,7 @@ async function main() {
 
       await crawler.crawl()
 
-      server.stop()
+      // server.stop()
       logger.log(`Done, check out ${chalk.green(config.outDir)} folder`)
     })
 
