@@ -1,5 +1,5 @@
 import { parse as parseUrl } from 'url'
-import puppeteer from 'puppeteer'
+import puppeteer, {BrowserLaunchArgumentOptions} from 'puppeteer'
 import chalk from 'chalk'
 import { PromiseQueue } from '@egoist/promise-queue'
 import { Writer } from './Writer'
@@ -25,6 +25,7 @@ export type CrawlerOptions = {
     linkFilter?: (url: string) => boolean
     wait?: string | number
     crawlLinks?: boolean
+    puppeteerOptions?: BrowserLaunchArgumentOptions
   }
   writer: Writer
   logger: Logger
@@ -52,7 +53,7 @@ export class Crawler {
         async (route: string) => {
           const file = routeToFile(route)
           let links: Set<string> | undefined
-          const browser = await puppeteer.launch();
+          const browser = await puppeteer.launch(options.puppeteerOptions ? options.puppeteerOptions : {args: ['--headless', '--no-sandbox']});
           const page = await browser.newPage();
           await page.goto(`http://${hostname}:${port}${route}`, { waitUntil: 'networkidle0', timeout: 0}).catch(e => console.error("NAVIGATE", e))
           if (options.crawlLinks){
