@@ -1,2 +1,0 @@
-(this["webpackJsonpvinovest-web-client"]=this["webpackJsonpvinovest-web-client"]||[]).push([[49],{1287:function(e,t,a){"use strict";a.r(t);var p=a(0),n=a.n(p),s=a(18),r=a(7);t.default=()=>{const e=Object(s.h)();let t=e.pathname;return e.pathname.includes(r.a.support)&&(t=e.pathname.replace(r.a.support,r.a.help)),e.pathname.includes(r.a.supportCategory)&&(t=e.pathname.replace(r.a.supportCategory,r.a.help)),n.a.createElement(s.a,{to:t})}}}]);
-//# sourceMappingURL=49.d5ca7938.chunk.js.map
